@@ -18,9 +18,8 @@ const weatherSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        expires: 30,
+        expires: 86400,
         default: Date.now
-    } // expires in 30 seconds
+    } // expires in 1 day
 });
-// weatherSchema.createIndex({})
 module.exports = mongoose.model('weather_temp', weatherSchema, 'weather_temp');
