@@ -10,7 +10,7 @@ const moongose = require('./config/mongoose');
 const watherRouter = require('./routes/weather.route');
 const homeRouter = require('./routes/home.route')
 
-const job = require('./config/cron')
+// const job = require('./config/cron')
 
 const app = express();
 const PORT = process.env.PORT;
@@ -31,5 +31,5 @@ app.use(logger('dev'));
 app.use('/', watherRouter);
 app.use('/home', homeRouter)
 moongose.connect();
-job.start();
+// job.start();
 app.listen(PORT, () => console.log(`app run port = ${PORT}`));
