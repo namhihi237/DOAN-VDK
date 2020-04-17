@@ -122,6 +122,7 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
         })
         .limit(24);
     // input.reverse();
+    console.log(input)
     try {
         const result = await axios({
             method: 'post',

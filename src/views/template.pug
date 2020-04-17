@@ -1,24 +1,29 @@
+doctype html
 head
   meta(charset='utf-8')
   meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
   meta(name='description', content='')
   meta(name='author', content='')
+  link(rel='shortcut icon', href='')
+  script(src='socket.io/socket.io.js')
   title Weather
   // Bootstrap core CSS
   link(href='/vendor/bootstrap/css/bootstrap.min.css', rel='stylesheet')
   // Custom styles for this template
   link(href='/css/simple-sidebar.css', rel='stylesheet')
+  
+  script(src='https://www.gstatic.com/charts/loader.js')
 #wrapper.d-flex
   // Sidebar
   #sidebar-wrapper.bg-light.border-right
     .sidebar-heading(style="color :red") Dự Báo Thời Tiết Thông Minh
     .list-group.list-group-flush
-      a.list-group-item.list-group-item-action.bg-light(href='#') Biểu Đồ Nhiệt Độ
+      a.list-group-item.list-group-item-action.bg-light(href='/chart') Biểu Đồ Nhiệt Độ
       a.list-group-item.list-group-item-action.bg-light(href='#') Biểu đồ Áp suất
       a.list-group-item.list-group-item-action.bg-light(href='#') Biểu đồ Độ ẩm
       a.list-group-item.list-group-item-action.bg-light(href='#') Dự Đoán Nhiệt Độ 
-      a.list-group-item.list-group-item-action.bg-light(href='#') Giới Thiệu Hệ Thống
-    //-   a.list-group-item.list-group-item-action.bg-light(href='#') Status
+      a.list-group-item.list-group-item-action.bg-light(href='/home') Giới Thiệu Hệ Thống
+      //- a.list-group-item.list-group-item-action.bg-light(href='#') Status
   // /#sidebar-wrapper
   // Page Content
   #page-content-wrapper
@@ -46,16 +51,16 @@ head
     //-   h1.mt-4 Simple Sidebar
     block content
         
-        
-      
+
   // /#page-content-wrapper
 // /#wrapper
 // Bootstrap core JavaScript
+// Menu Toggle Script
 script(src='/vendor/jquery/jquery.min.js')
 script(src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
-// Menu Toggle Script
 script.
-  $("#menu-toggle").click(function(e) {
-  e.preventDefault();
-  $("#wrapper").toggleClass("toggled");
-  });
+    $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+    });
+ 
