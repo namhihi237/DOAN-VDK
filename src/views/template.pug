@@ -4,7 +4,7 @@ head
   meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
   meta(name='description', content='')
   meta(name='author', content='')
-  link(rel='shortcut icon', href='')
+  link(rel='shortcut icon', href='favicon.ico')
   script(src='socket.io/socket.io.js')
   title Weather
   // Bootstrap core CSS
@@ -18,10 +18,10 @@ head
   #sidebar-wrapper.bg-light.border-right
     .sidebar-heading(style="color :red") Dự Báo Thời Tiết Thông Minh
     .list-group.list-group-flush
-      a.list-group-item.list-group-item-action.bg-light(href='/chart') Biểu Đồ Nhiệt Độ
-      a.list-group-item.list-group-item-action.bg-light(href='#') Biểu đồ Áp suất
-      a.list-group-item.list-group-item-action.bg-light(href='#') Biểu đồ Độ ẩm
-      a.list-group-item.list-group-item-action.bg-light(href='#') Dự Đoán Nhiệt Độ 
+      a.list-group-item.list-group-item-action.bg-light(href='/temperature') Biểu Đồ Nhiệt Độ
+      a.list-group-item.list-group-item-action.bg-light(href='/humidity') Biểu đồ Áp suất
+      a.list-group-item.list-group-item-action.bg-light(href='/pressure') Biểu đồ Độ ẩm
+      a.list-group-item.list-group-item-action.bg-light(href='/predict') Dự Đoán  
       a.list-group-item.list-group-item-action.bg-light(href='/home') Giới Thiệu Hệ Thống
       //- a.list-group-item.list-group-item-action.bg-light(href='#') Status
   // /#sidebar-wrapper

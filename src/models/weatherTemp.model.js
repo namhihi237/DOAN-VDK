@@ -23,7 +23,7 @@ const weatherSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: new Date().addHoures(24)
+        default: new Date().addHoures(168)
     } // expires in 1 day
 });
 

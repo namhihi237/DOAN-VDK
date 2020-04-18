@@ -1,3 +1,6 @@
+require('dotenv-safe').config({
+    example: process.env.CI ? '.env.ci.example' : '.env.example',
+});
 const Weather = require('../models/weather.model');
 const Weather_temp = require('../models/weatherTemp.model');
 const axios = require('axios');
@@ -40,7 +43,6 @@ module.exports.insertData = async(req, res, next) => {
     if (preData.length == 1) {
         preData[0].time.setHours(preData[0].time.getHours() - 7)
         const preHour = preData[0].time.getHours();
-        console.log(preHour, hour)
         if (hour != preHour) {
             const preYear = preData[0].time.getFullYear()
             const preMonth = preData[0].time.getMonth()
@@ -90,7 +92,6 @@ module.exports.insertData = async(req, res, next) => {
                     pressure,
                     rain
                 }
-                console.log(avgData)
                 await Weather.create(avgData)
             } catch (error) {
                 next(error)
@@ -99,15 +100,12 @@ module.exports.insertData = async(req, res, next) => {
     }
     try {
         const item = await Weather_temp.create(record);
-        console.log(item)
         res.status(200).json(item);
     } catch (error) {
         next(error);
     }
 };
 
-// tinh toan du lieu trung binh 1 gio luu vao database weather
-module.exports.calculatorDataAndSaveAnHour = async(req, res, next) => {};
 
 module.exports.tempPredictAnHour = async(req, res, next) => {
     const input = await Weather.find({}, {
@@ -122,17 +120,27 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
         })
         .limit(24);
     // input.reverse();
-    console.log(input)
-    try {
-        const result = await axios({
-            method: 'post',
-            url: 'http://127.0.0.1:5000/api/v1',
-            data: {
-                input,
-            },
-        });
-        res.json(result.data);
-    } catch (error) {
-        next(error);
+    if (input.length == 24) {
+        try {
+            const result = await axios({
+                method: 'post',
+                url: process.env.TEMPERATURE_API,
+                data: {
+                    input,
+                },
+            });
+            res.render('predict/predict.pug', {
+                result
+            })
+        } catch (error) {
+            res.render('predict/predict.pug', {
+                mess: 'Server API flask not working '
+            })
+            next(error);
+        }
+    } else {
+        res.render('predict/predict.pug', {
+            mess: 'Data is not enough '
+        })
     }
 };

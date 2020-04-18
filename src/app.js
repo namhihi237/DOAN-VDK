@@ -6,9 +6,13 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const path = require('path');
 const moongose = require('./config/mongoose');
+
 const watherRouter = require('./routes/weather.route');
 const homeRouter = require('./routes/home.route');
-const chartRouter = require('./routes/chart.route');
+const tempChartRoute = require('./routes/temp.chart.route');
+const humidityChartRoute = require('./routes/humidity.chart.router')
+const pressureChartRoute = require('./routes/pressure.chart.route')
+
 
 const app = express();
 // import socket io
@@ -32,22 +36,42 @@ app.use(logger('dev'));
 
 moongose.connect(); // connect database
 server.listen(PORT, () => console.log(`app run port = ${PORT}`));
-app.use('/', watherRouter);
+
+app.use('/predict', watherRouter);
 app.use('/home', homeRouter);
-app.use('/chart', chartRouter)
+app.use('/temperature', tempChartRoute)
+app.use('/humidity', humidityChartRoute)
+app.use('/pressure', pressureChartRoute)
 
-
+// socketio
 io.on('connection', (socket) => {
     socket.join("room-x");
     console.log(socket.id + ' connected');
     socket.on('disconnect', () => {
         console.log(socket.id + ' disconnect');
     });
-    socket.on("Client-send-data", async(mess) => {
+    // send data to Temperature chart
+    socket.on("Client-send-temp", async(mess) => {
+        // After 1 second the server sends the last 20 records
         setInterval(async() => {
-            let data = await require('./controllers/chart.controller').getData();
+            let data = await require('./controllers/temp.chart.controller').getData();
             socket.emit("Sv-send", data)
         }, 1000)
     })
 
+    socket.on("Client-send-humidity", async(mess) => {
+        // After 1 second the server sends the last 20 records
+        setInterval(async() => {
+            let data = await require('./controllers/temp.chart.controller').getData();
+            socket.emit("Sv-send", data)
+        }, 1000)
+    })
+
+    socket.on("Client-send-pressure", async(mess) => {
+        // After 1 second the server sends the last 20 records
+        setInterval(async() => {
+            let data = await require('./controllers/temp.chart.controller').getData();
+            socket.emit("Sv-send", data)
+        }, 1000)
+    })
 });

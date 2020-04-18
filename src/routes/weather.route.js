@@ -4,7 +4,6 @@ const weatherController = require('../controllers/weather.controller');
 
 router.get('/getAll', weatherController.getAll);
 router.get('/insert', weatherController.insertData);
-router.get('/tempPredict', weatherController.tempPredictAnHour);
-router.get('/insertMinute', weatherController.calculatorDataAndSaveAnHour)
+router.get('/', weatherController.tempPredictAnHour);
 
 module.exports = router;
