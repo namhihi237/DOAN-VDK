@@ -1,7 +1,8 @@
 require('dotenv-safe').config({
     example: process.env.CI ? '.env.ci.example' : '.env.example',
 });
-
+// const cron = require('cronb');
+var CronJob = require('cron').CronJob;
 const moongose = require('./config/mongoose');
 const app = require('../src/config/express');
 // import socket io
@@ -46,18 +47,19 @@ io.on('connection', (socket) => {
     });
 });
 
-var CronJob = require('cron').CronJob;
 const axios = require('axios');
 var job = new CronJob(
-    '*/20 * * * *',
+    '1 * * * * *',
     function() {
+        console.log('a');
         try {
-            await axios({
+            axios({
                 method: 'get',
                 url: process.env.API,
             });
+            console.log('ok');
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     },
     null,
@@ -65,3 +67,14 @@ var job = new CronJob(
     'Asia/Ho_Chi_Minh',
 );
 job.start();
+// var CronJob = require('cron').CronJob;
+// var job = new CronJob(
+//     '* * * * * *',
+//     function() {
+//         console.log('You will see this message every second');
+//     },
+//     null,
+//     true,
+//     'America/Los_Angeles',
+// );
+// job.start();
