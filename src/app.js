@@ -11,7 +11,7 @@ const io = require('socket.io')(server);
 const PORT = process.env.PORT;
 
 
-moongose.connect(); // connect database
+moongose.connect();
 server.listen(PORT, () => console.log(`app run port = ${PORT}`));
 
 // socketio

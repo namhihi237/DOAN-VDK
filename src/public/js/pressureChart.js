@@ -6,7 +6,9 @@ google.charts.load("current", {
 google.charts.setOnLoadCallback(drawChart);
 
 function init() {
-    let socket = io(`http://localhost:${port}`);
+    // let socket = io(`http://localhost:${port}`);
+    // let socket = io('https://ccb3c848.ngrok.io/');
+    let socket = io();
     socket.emit("Client-send-pressure", "sendData")
     socket.on('Sv-send', (data) => {
         drawChart(data)

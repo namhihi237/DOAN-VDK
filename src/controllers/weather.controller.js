@@ -6,23 +6,23 @@ const Weather_temp = require('../models/weatherTemp.model');
 const axios = require('axios');
 
 Date.prototype.addHoures = function(h) {
-    this.setHours(this.getHours() + h)
-    return this
-}
-module.exports.getAll = async(req, res, next) => {
-    const items = await await Weather.find({}, {
-            temperature: 1,
-            humidity: 1,
-            pressure: 1,
-            rain: 1,
-            _id: 0,
-        }, )
-        .sort({
-            _id: -1,
-        })
-        .limit(24);
-    res.json(items);
-};
+        this.setHours(this.getHours() + h)
+        return this
+    }
+    // module.exports.getAll = async(req, res, next) => {
+    //     const items = await await Weather.find({}, {
+    //             temperature: 1,
+    //             humidity: 1,
+    //             pressure: 1,
+    //             rain: 1,
+    //             _id: 0,
+    //         }, )
+    //         .sort({
+    //             _id: -1,
+    //         })
+    //         .limit(24);
+    //     res.json(items);
+    // };
 
 module.exports.insertData = async(req, res, next) => {
     const data = req.query;

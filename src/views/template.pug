@@ -20,8 +20,8 @@ head
     .list-group.list-group-flush
       a.list-group-item.list-group-item-action.bg-light(href='/') Giới Thiệu Hệ Thống
       a.list-group-item.list-group-item-action.bg-light(href='/temperature') Biểu Đồ Nhiệt Độ
-      a.list-group-item.list-group-item-action.bg-light(href='/humidity') Biểu đồ Áp suất
-      a.list-group-item.list-group-item-action.bg-light(href='/pressure') Biểu đồ Độ ẩm
+      a.list-group-item.list-group-item-action.bg-light(href='/humidity') Biểu Đồ Độ Ẩm
+      a.list-group-item.list-group-item-action.bg-light(href='/pressure') Biểu Đồ Áp Suất
       a.list-group-item.list-group-item-action.bg-light(href='/predict') Dự Đoán  
       
       //- a.list-group-item.list-group-item-action.bg-light(href='#') Status
@@ -42,9 +42,9 @@ head
             a.nav-link(href='#') Link
           li.nav-item.dropdown
             a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-              | Dropdown
+              | Tools
             .dropdown-menu.dropdown-menu-right(aria-labelledby='navbarDropdown')
-              a.dropdown-item(href='#') Action
+              a.dropdown-item(href='/csv') Export Csv
               a.dropdown-item(href='#') Another action
               .dropdown-divider
               a.dropdown-item(href='#') Something else here
