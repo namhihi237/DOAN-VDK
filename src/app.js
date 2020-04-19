@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
 
 const axios = require('axios');
 var job = new CronJob(
-    '1 * * * * *',
+    '*/20 * * * *',
     function() {
         console.log('a');
         try {
