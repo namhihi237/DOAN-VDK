@@ -10,7 +10,6 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT;
 
-
 moongose.connect();
 server.listen(PORT, () => console.log(`app run port = ${PORT}`));
 
@@ -46,3 +45,23 @@ io.on('connection', (socket) => {
         }, 1000);
     });
 });
+
+var CronJob = require('cron').CronJob;
+const axios = require('axios');
+var job = new CronJob(
+    '*/20 * * * *',
+    function() {
+        try {
+            await axios({
+                method: 'get',
+                url: process.env.API,
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    null,
+    true,
+    'Asia/Ho_Chi_Minh',
+);
+job.start();

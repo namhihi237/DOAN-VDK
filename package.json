@@ -9,6 +9,7 @@
     "dependencies": {
         "axios": "^0.19.2",
         "body-parser": "^1.19.0",
+        "crob": "^1.0.0",
         "dotenv-safe": "^8.2.0",
         "express": "^4.17.1",
         "google-charts": "^2.0.0",
