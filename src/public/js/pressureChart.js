@@ -44,6 +44,10 @@ function drawChart(input) {
         // backgroundColor: '#e4ef9b'
     };
     let chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
+    // Wait for the chart to finish drawing before calling the getImageURI() method.
+    // google.visualization.events.addListener(chart, 'ready', function() {
+    //     curve_chart.innerHTML = '<img src="' + chart.getImageURI() + '">';
+    //     // console.log(curve_chart.innerHTML);
+    // });
     chart.draw(data, options);
 }

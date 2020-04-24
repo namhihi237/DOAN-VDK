@@ -35,7 +35,7 @@ head
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.ml-auto.mt-2.mt-lg-0
           li.nav-item.active
-            a.nav-link(href='#')
+            a.nav-link(href='/')
               | Home 
               span.sr-only (current)
           li.nav-item
@@ -44,8 +44,8 @@ head
             a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
               | Tools
             .dropdown-menu.dropdown-menu-right(aria-labelledby='navbarDropdown')
-              a.dropdown-item(href='/csv') Export Csv
-              a.dropdown-item(href='#') Another action
+              a.dropdown-item(href='/csvMinutes') Export Csv (Minutes)
+              a.dropdown-item(href='/csvHours') Export Csv (Hours)
               .dropdown-divider
               a.dropdown-item(href='#') Something else here
     //- .container-fluid
