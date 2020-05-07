@@ -3,6 +3,7 @@ require('dotenv-safe').config({
 });
 const Weather = require('../models/weather.model');
 const Weather_temp = require('../models/weatherTemp.model');
+const TempPredict = require('../models/tempPredict.model')
 const axios = require('axios');
 
 Date.prototype.addHoures = function(h) {
@@ -79,6 +80,7 @@ module.exports.insertData = async(req, res, next) => {
                     rain
                 }
                 await Weather.create(avgData)
+
             } catch (error) {
                 next(error)
             }
@@ -86,6 +88,8 @@ module.exports.insertData = async(req, res, next) => {
     }
     try {
         const item = await Weather_temp.create(record);
+        const dataIo = await require('../controllers/temp.chart.controller').getData()
+        require('../app').io.emit('Sv-send', dataIo)
         res.status(200).json(item);
     } catch (error) {
         next(error);
@@ -94,7 +98,7 @@ module.exports.insertData = async(req, res, next) => {
 
 
 module.exports.tempPredictAnHour = async(req, res, next) => {
-    const input = await Weather.find({}, {
+    const input = await Weather_temp.find({}, {
             temperature: 1,
             humidity: 1,
             pressure: 1,
@@ -105,18 +109,26 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
             _id: -1,
         })
         .limit(24);
-    // input.reverse();
+    // console.log(input)
     if (input.length == 24) {
         try {
             const result = await axios({
                 method: 'post',
-                url: process.env.TEMPERATURE_API,
+                url: process.env.API,
                 data: {
                     input,
                 },
             });
+            // console.log(result)
+            let date = new Date()
+
+            date.addHoures(7)
+            await TempPredict.create({
+                time: date,
+                temperature: result.data.result
+            })
             res.render('predict/predict.pug', {
-                result
+                result: `${parseFloat(result.data.result).toFixed(2)} (°C)`
             })
         } catch (error) {
             res.render('predict/predict.pug', {

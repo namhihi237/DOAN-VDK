@@ -1,12 +1,11 @@
 require('dotenv-safe').config({
     example: process.env.CI ? '.env.ci.example' : '.env.example',
 });
-// const cron = require('cronb');
-var CronJob = require('cron').CronJob;
+
 const moongose = require('./config/mongoose');
 const app = require('../src/config/express');
 // import socket io
-
+const getData = require('./controllers/temp.chart.controller')
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT;
@@ -23,47 +22,19 @@ io.on('connection', (socket) => {
     });
     // send data to Temperature chart
     socket.on('Client-send-temp', async(mess) => {
-        // After 1 second the server sends the last 20 records
-        setInterval(async() => {
-            let data = await require('./controllers/temp.chart.controller').getData();
-            socket.emit('Sv-send', data);
-        }, 1000);
+        let data = await getData.getData();
+        socket.emit('Sv-send', data);
     });
     // send data to humidity chart
     socket.on('Client-send-humidity', async(mess) => {
-        // After 1 second the server sends the last 20 records
-        setInterval(async() => {
-            let data = await require('./controllers/temp.chart.controller').getData();
-            socket.emit('Sv-send', data);
-        }, 1000);
+        let data = await getData.getData();
+        socket.emit('Sv-send', data);
     });
     // send data to pressure chart
     socket.on('Client-send-pressure', async(mess) => {
-        // After 1 second the server sends the last 20 records
-        setInterval(async() => {
-            let data = await require('./controllers/temp.chart.controller').getData();
-            // console.log(data.length)
-            socket.emit('Sv-send', data);
-        }, 1000);
+        let data = await getData.getData();
+        socket.emit('Sv-send', data);
     });
 });
 
-// const axios = require('axios');
-// var job = new CronJob(
-//     '*/20 * * * *',
-//     function() {
-//         console.log('a');
-//         try {
-//             axios({
-//                 method: 'get',
-//                 url: process.env.API,
-//             });
-//             console.log('ok');
-//         } catch (error) {
-//             console.log(error);
-//         }
-//     },
-//     null,
-//     true,
-//     'Asia/Ho_Chi_Minh',
-// );
+exports.io = io;
