@@ -8,6 +8,7 @@ const homeRouter = require('../routes/home.route');
 const tempChartRoute = require('../routes/temp.chart.route');
 const humidityChartRoute = require('../routes/humidity.chart.router');
 const pressureChartRoute = require('../routes/pressure.chart.route');
+const chatbotRoute = require('../routes/chatbot.route');
 const app = express();
 
 app.set('views', './src/views');
@@ -27,5 +28,6 @@ app.use('/', homeRouter);
 app.use('/temperature', tempChartRoute);
 app.use('/humidity', humidityChartRoute);
 app.use('/pressure', pressureChartRoute);
+app.use('/webhook', chatbotRoute);
 
 module.exports = app

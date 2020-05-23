@@ -19,6 +19,7 @@
         "node-cron": "^2.0.3",
         "path": "^0.12.7",
         "pug": "^2.0.4",
+        "request": "^2.88.2",
         "socket.io": "^2.3.0"
     },
     "devDependencies": {
