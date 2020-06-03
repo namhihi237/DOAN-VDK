@@ -102,14 +102,13 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
             temperature: 1,
             humidity: 1,
             pressure: 1,
-            rain: 1,
             _id: 0,
         }, )
         .sort({
             _id: -1,
         })
         .limit(24);
-    // console.log(input)
+    console.log(input)
     if (input.length == 24) {
         try {
             const result = await axios({
@@ -120,6 +119,7 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
                 },
             });
             // console.log(result)
+
             let date = new Date()
 
             date.addHoures(7)
@@ -142,3 +142,40 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
         })
     }
 };
+
+module.exports.predictRain = async(req, res, next) => {
+    const input = await Weather_temp.find({}, {
+            temperature: 1,
+            humidity: 1,
+            pressure: 1,
+            rain: 1,
+            _id: 0,
+        }, )
+        .sort({
+            _id: -1,
+        })
+        .limit(12);
+    console.log(input)
+    if (input.length == 12) {
+        try {
+            const result = await axios({
+                method: 'post',
+                url: process.env.API_rain,
+                data: {
+                    input,
+                },
+            });
+            // console.log(result)
+
+            // res.render('predict/predict.pug', {
+            //     result: `${parseFloat(result.data.result).toFixed(2)} (°C)`
+            // })
+            res.send(result.data.result);
+        } catch (error) {
+            res.render('predict/predict.pug', {
+                mess: 'Server API flask not working '
+            })
+            next(error);
+        }
+    }
+}

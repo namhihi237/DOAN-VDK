@@ -4,6 +4,7 @@ require('dotenv-safe').config({
 const request = require('request');
 const weather_temp = require('../models/weatherTemp.model')
 const tempPredcit = require('../models/tempPredict.model')
+const axios = require('axios')
     // Sets server port and logs message on success
 module.exports.postWebhook = (req, res) => {
     let body = req.body;
@@ -107,14 +108,37 @@ ${rainText}
         }
 
     } else if (payload === 'tempPredict') {
-        const temp = await tempPredcit.find()
+        // const temp = await tempPredcit.find()
+        //     .sort({
+        //         _id: -1,
+        //     })
+        //     .limit(1);
+
+        const input = await weather_temp.find({}, {
+                temperature: 1,
+                humidity: 1,
+                pressure: 1,
+                _id: 0,
+            }, )
             .sort({
                 _id: -1,
             })
-            .limit(1);
-        response = {
-            "text": `Nhiệt độ sau 1 giờ là : ${+temp[0].temperature.toFixed(2)} °C`
+            .limit(24);
+        if (input.length == 24) {
+            const result = await axios({
+                method: 'post',
+                url: process.env.API,
+                data: {
+                    input,
+                },
+            });
+            console.log(result.data.result);
+
+            response = {
+                "text": `Nhiệt độ sau 1 giờ là : ${result.data.result} °C`
+            }
         }
+
     } else if (payload == 'rain') {
         response = {
             "text": `Hệ thống dự đoán vào lúc 17h trời sẽ có mưa`
