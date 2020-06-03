@@ -4,7 +4,10 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "start": "nodemon pug ./src/app.js"
+        "start": "pm2 start ./src/app.js",
+        "dev": "nodemon pug ./src/app.js",
+        "stop": "pm2 kill",
+        "log": "pm2 -logs"
     },
     "dependencies": {
         "axios": "^0.19.2",
@@ -18,6 +21,7 @@
         "morgan": "^1.10.0",
         "node-cron": "^2.0.3",
         "path": "^0.12.7",
+        "pm2": "^4.4.0",
         "pug": "^2.0.4",
         "request": "^2.88.2",
         "socket.io": "^2.3.0"

@@ -170,7 +170,9 @@ module.exports.predictRain = async(req, res, next) => {
             // res.render('predict/predict.pug', {
             //     result: `${parseFloat(result.data.result).toFixed(2)} (°C)`
             // })
-            res.send(result.data.result);
+            console.log(result.data.result);
+
+            res.send("ok");
         } catch (error) {
             res.render('predict/predict.pug', {
                 mess: 'Server API flask not working '
