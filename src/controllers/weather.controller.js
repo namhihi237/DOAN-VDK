@@ -108,6 +108,8 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
             _id: -1,
         })
         .limit(24);
+    input.reverse();
+
     console.log(input)
     if (input.length == 24) {
         try {

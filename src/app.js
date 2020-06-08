@@ -5,7 +5,8 @@ require('dotenv-safe').config({
 const moongose = require('./config/mongoose');
 const app = require('../src/config/express');
 // import socket io
-const getData = require('./controllers/temp.chart.controller')
+const getData = require('./controllers/temp.chart.controller');
+const getTempPredict = require('./controllers/tempPredict.chart.controller');
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT;
@@ -35,6 +36,12 @@ io.on('connection', (socket) => {
         let data = await getData.getData();
         socket.emit('Sv-send', data);
     });
+
+    socket.on('Client-send-tempPredict', async(mess) => {
+        let data = await getTempPredict.getTempPredict(); // need fix
+
+        socket.emit('Sv-send', data);
+    })
 });
 
 exports.io = io;
