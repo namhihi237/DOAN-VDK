@@ -4,6 +4,7 @@ require('dotenv-safe').config({
 
 const moongose = require('./config/mongoose');
 const app = require('../src/config/express');
+const job = require('../src/config/cronb');
 // import socket io
 const getData = require('./controllers/temp.chart.controller');
 const getTempPredict = require('./controllers/tempPredict.chart.controller');
@@ -13,7 +14,7 @@ const PORT = process.env.PORT;
 
 moongose.connect();
 server.listen(PORT, () => console.log(`app run port = ${PORT}`));
-
+job.start();
 // socketio
 io.on('connection', (socket) => {
     socket.join('room-x');

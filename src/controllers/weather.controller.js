@@ -88,7 +88,7 @@ module.exports.insertData = async(req, res, next) => {
     }
     try {
         const item = await Weather_temp.create(record);
-        const dataIo = await require('../controllers/temp.chart.controller').getData()
+        const dataIo = await require('../controllers/tempPredict.chart.controller').getTempPredict();
         require('../app').io.emit('Sv-send', dataIo)
         res.status(200).json(item);
     } catch (error) {

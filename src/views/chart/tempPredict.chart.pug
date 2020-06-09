@@ -1,6 +1,15 @@
 extends ../template
 block content
     h2.text-center Biểu đồ dự đoán nhiệt độ (Temperature (°C))
+    if temp
+            h4.text-capitalize=temp
     script(type='text/javascript' src='/js/tempPredictChart.js')    
     #curve_chart(style='width: 1200px; height: 600px')
     //- #curve_chart
+    style.
+        h4 {
+            font-size : 30px;
+            margin-left: 30px;
+            margin-top :20px
+        }
+        
