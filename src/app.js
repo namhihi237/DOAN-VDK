@@ -37,10 +37,9 @@ io.on('connection', (socket) => {
         let data = await getData.getData();
         socket.emit('Sv-send', data);
     });
-
+    //send data hours and data predict hours
     socket.on('Client-send-tempPredict', async(mess) => {
         let data = await getTempPredict.getTempPredict(); // need fix
-
         socket.emit('Sv-send', data);
     })
 });

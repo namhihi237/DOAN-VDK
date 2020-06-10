@@ -6,10 +6,7 @@ module.exports.chartTempPredict = async(req, res, next) => {
     }).limit(1);
     console.log(temp[0]);
 
-    res.render('chart/tempPredict.chart.pug', {
-        temp: `Nhiệt độ dự đoán vào lúc ${temp[0].time.getHours()} giờ là : ${temp[0].temperature} `
-
-    });
+    res.render('chart/tempPredict.chart.pug');
 };
 
 module.exports.getTempPredict = async() => {
@@ -44,12 +41,14 @@ module.exports.getTempPredict = async() => {
             Object.assign(obj, {
                 temp: dataHours[i].temperature,
             });
-            // console.log(dataPre[i]);
 
             data.push(obj);
         }
-        console.log(dataPre);
-        return data;
+        dataEnd = [data, [dataPre[12]]]
+
+        console.log(dataEnd);
+
+        return dataEnd;
     } catch (error) {
         return [];
     }

@@ -27,7 +27,6 @@ const job = new CronJob('0 * * * * *', async function() {
         .limit(24);
     input.reverse();
 
-    console.log(input)
     if (input.length == 24) {
         try {
             const result = await axios({
@@ -37,7 +36,6 @@ const job = new CronJob('0 * * * * *', async function() {
                     input,
                 },
             });
-            console.log(result.data.result)
 
             let date = new Date()
 
@@ -50,7 +48,7 @@ const job = new CronJob('0 * * * * *', async function() {
             app.io.emit('Sv-send', dataIo);
         } catch (error) {
 
-            console.log(error);
+            console.log(error.Error);
 
         }
     } else {

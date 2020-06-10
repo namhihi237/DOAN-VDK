@@ -3,26 +3,33 @@ google.charts.load("current", {
     packages: ["corechart", "line", ]
 });
 google.charts.setOnLoadCallback(drawChart);
+document.getElementById("temp").value = "nampro"
+Date.prototype.addHoures = function(h) {
+    this.setHours(this.getHours() + h)
+    return this
+}
 
 function init() {
 
     let socket = io();
     socket.emit("Client-send-tempPredict", "sendData")
     socket.on('Sv-send', (data) => {
-        drawChart(data)
+        drawChart(data);
+        let date = new Date(data[1][0].time)
+        date.addHoures(-7)
+        document.getElementById("temp").innerText = ` Hệ thống dự đoán nhiệt độ lúc ${date.getHours() + 1} giờ vào khoảng ${+data[1][0].temperature.toFixed(2)} (°C)`;
+
     })
 }
 
 function drawChart(input) {
     dataChart = []
-    let i = 0;
-    input.forEach(item => {
+    input[0].forEach(item => {
         let time = new Date(item.time)
         time.setHours(time.getHours() - 7) // conver timezone VN
         let hours = time.getHours()
         let day = time.getDate();
         // let munites = time.getMinutes()
-        i += 1;
         dataChart.push([`${hours + 1}h/${day}`, item.temperature, item.temp])
     })
     dataChart.reverse()
