@@ -39,6 +39,12 @@ function drawChart(input) {
         vAxis: {
             title: '°C'
         },
+        chartArea: {
+            left: 150,
+            top: 20,
+            width: "90%",
+            height: "70%"
+        }
         // backgroundColor: '#e4ef9b',
     };
     let chart = new google.visualization.LineChart(document.getElementById('curve_chart'));

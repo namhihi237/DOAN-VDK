@@ -19,7 +19,7 @@ module.exports.getData = async() => {
             time: 1
         }).sort({
             _id: -1
-        }).limit(60)
+        }).limit(30)
         return data
     } catch (error) {
         return []

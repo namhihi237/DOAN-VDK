@@ -26,6 +26,7 @@ const job = new CronJob('0 * * * * *', async function() {
         })
         .limit(24);
     input.reverse();
+    // console.log(input);
 
     if (input.length == 24) {
         try {
@@ -38,13 +39,66 @@ const job = new CronJob('0 * * * * *', async function() {
             });
 
             let date = new Date()
-
             date.addHoures(7)
             await TempPredict.create({
                 time: date,
                 temperature: result.data.result
             })
             const dataIo = await getData.getTempPredict();
+            // du doan mua
+            let resultRain = ""
+            let dateH = new Date();
+            console.log(dateH.getHours());
+            let start, end;
+            console.log("zo");
+            let limit = 0;
+            if (dateH.getHours() < 12) {
+                limit = dateH.getHours() + 12;
+                start = 0;
+                end = 12;
+            } else {
+                limit = dateH.getHours();
+                start = 12;
+                end = 24;
+            }
+
+
+            let inputA = await Weather_temp.find({}, {
+                    temperature: 1,
+                    humidity: 1,
+                    pressure: 1,
+                    rain: 1,
+                    _id: 0,
+                }, )
+                .sort({
+                    _id: -1,
+                })
+                .limit(limit);
+            inputA = inputA.slice(0, 12);
+            inputA.reverse();
+            console.log(inputA);
+
+            try {
+                resultRain = await axios({
+                    method: 'post',
+                    url: process.env.API_rain,
+                    data: {
+                        inputA,
+                    },
+                });
+                resultRain = resultRain.data.result;
+
+            } catch (error) {
+                console.log(error);
+
+            }
+
+            dataIo.push({
+                resultRain,
+                start,
+                end
+            });
+
             app.io.emit('Sv-send', dataIo);
         } catch (error) {
 
@@ -53,6 +107,7 @@ const job = new CronJob('0 * * * * *', async function() {
         }
     } else {
         console.log("Data not enough");
+
 
     }
 }, null, true, 'Asia/Ho_Chi_Minh');
