@@ -14,9 +14,9 @@ Date.prototype.addHoures = function(h) {
     return this
 }
 
-const job = new CronJob('0 * * * * *', async function() {
+const job = new CronJob('* 0 * * * *', async function() {
     console.log('get update predict');
-    const input = await Weather.find({}, {
+    const input = await Weather_temp.find({}, {
             temperature: 1,
             humidity: 1,
             pressure: 1,
@@ -27,9 +27,11 @@ const job = new CronJob('0 * * * * *', async function() {
         })
         .limit(24);
     input.reverse();
-    // console.log(input);
+    console.log(input);
 
     if (input.length == 24) {
+        console.log("ok");
+
         try {
             const result = await axios({
                 method: 'post',
@@ -45,6 +47,8 @@ const job = new CronJob('0 * * * * *', async function() {
                 time: date,
                 temperature: result.data.result
             })
+            console.log(result.data.result);
+
             const dataIo = await getData.getTempPredict();
             // du doan mua
             let resultRain = ""
@@ -64,7 +68,7 @@ const job = new CronJob('0 * * * * *', async function() {
             }
 
 
-            let inputA = await Weather.find({}, {
+            let inputA = await Weather_temp.find({}, {
                     temperature: 1,
                     humidity: 1,
                     pressure: 1,
