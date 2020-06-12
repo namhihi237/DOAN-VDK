@@ -4,6 +4,7 @@ require('dotenv-safe').config({
 const CronJob = require('cron').CronJob;
 const axios = require('axios');
 const Weather_temp = require('../models/weatherTemp.model');
+const Weather = require('../models/weather.model');
 const TempPredict = require('../models/tempPredict.model');
 const getData = require('../controllers/tempPredict.chart.controller');
 const app = require('../app');
@@ -15,7 +16,7 @@ Date.prototype.addHoures = function(h) {
 
 const job = new CronJob('0 * * * * *', async function() {
     console.log('get update predict');
-    const input = await Weather_temp.find({}, {
+    const input = await Weather.find({}, {
             temperature: 1,
             humidity: 1,
             pressure: 1,
@@ -63,7 +64,7 @@ const job = new CronJob('0 * * * * *', async function() {
             }
 
 
-            let inputA = await Weather_temp.find({}, {
+            let inputA = await Weather.find({}, {
                     temperature: 1,
                     humidity: 1,
                     pressure: 1,

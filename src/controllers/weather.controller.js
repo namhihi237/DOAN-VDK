@@ -98,7 +98,7 @@ module.exports.insertData = async(req, res, next) => {
 
 
 module.exports.tempPredictAnHour = async(req, res, next) => {
-    const input = await Weather_temp.find({}, {
+    const input = await Weather.find({}, {
             temperature: 1,
             humidity: 1,
             pressure: 1,
@@ -146,7 +146,7 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
 };
 
 module.exports.predictRain = async(req, res, next) => {
-    const input = await Weather_temp.find({}, {
+    const input = await Weather.find({}, {
             temperature: 1,
             humidity: 1,
             pressure: 1,

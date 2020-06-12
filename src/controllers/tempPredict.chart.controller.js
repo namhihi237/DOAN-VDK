@@ -60,7 +60,7 @@ module.exports.getTempPredict = async() => {
             start = 12;
             end = 24;
         }
-        let inputA = await Weather_temp.find({}, {
+        let inputA = await Weather.find({}, {
                 temperature: 1,
                 humidity: 1,
                 pressure: 1,
