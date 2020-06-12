@@ -19,7 +19,7 @@ module.exports.getTempPredict = async() => {
             .sort({
                 _id: -1,
             })
-            .limit(13);
+            .limit(1);
 
         const dataHours = await Weather.find({}, {
                 _id: 0,
@@ -28,23 +28,18 @@ module.exports.getTempPredict = async() => {
             .sort({
                 _id: -1,
             })
-            .limit(12);
-        dataPre.reverse();
-        dataHours.reverse();
+            .limit(24);
+        // dataHours.reverse();
+        // console.log(dataHours);
         let data = [];
 
-        for (let i = 11; i >= 0; i--) {
-            let obj = {};
-            Object.assign(obj, {
-                time: dataPre[i].time,
-                temperature: dataPre[i].temperature,
-            });
-            Object.assign(obj, {
-                temp: dataHours[i].temperature,
-            });
 
-            data.push(obj);
-        }
+        data.push(dataHours)
+        data.push(dataPre)
+
+
+        // data.push(obj);
+        // }
 
         //
         let resultRain = ""
@@ -73,7 +68,6 @@ module.exports.getTempPredict = async() => {
             .limit(limit);
         inputA = inputA.slice(0, 12);
         inputA.reverse();
-        console.log(inputA);
 
         try {
             resultRain = await axios({
@@ -90,15 +84,15 @@ module.exports.getTempPredict = async() => {
 
         }
         //
-        dataEnd = [data, [dataPre[12]], {
+        data.push({
             resultRain,
             start,
             end
-        }]
+        })
 
-        // console.log(dataEnd);
+        // console.log(data);
 
-        return dataEnd;
+        return data;
     } catch (error) {
         return [];
     }

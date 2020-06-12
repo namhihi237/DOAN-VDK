@@ -88,7 +88,8 @@ module.exports.insertData = async(req, res, next) => {
     }
     try {
         const item = await Weather_temp.create(record);
-        const dataIo = await require('../controllers/tempPredict.chart.controller').getTempPredict();
+        // const dataIo = await require('../controllers/tempPredict.chart.controller').getTempPredict();
+        const dataIo = await require('../controllers/temp.chart.controller').getData();
         require('../app').io.emit('Sv-send', dataIo)
         res.status(200).json(item);
     } catch (error) {
@@ -110,7 +111,7 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
         .limit(24);
     input.reverse();
 
-    console.log(input)
+    // console.log(input)
     if (input.length == 24) {
         try {
             const result = await axios({

@@ -21,6 +21,8 @@ function drawChart(input) {
         let hours = time.getHours()
         let munites = time.getMinutes()
         dataChart.push([`${hours}:${munites}`, item.temperature])
+        console.log(dataChart);
+
     })
     dataChart.reverse()
     dataChart.unshift(["time", "temperature"])

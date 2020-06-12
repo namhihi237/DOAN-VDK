@@ -59,3 +59,24 @@ module.exports.exportCsvDataHour = async(req, res, next) => {
         next(error)
     }
 };
+module.exports.all = async(req, res, next) => {
+    const items = await Weather.find({}, {
+        _id: 0,
+        __v: 0
+    }).sort({
+        time: 1
+    })
+    items.forEach(async e => {
+        await Weather.findOneAndDelete({
+            _id: e._id
+        })
+        console.log("xoa ok");
+
+    });
+    items.forEach(async(e) => {
+            console.log(e);
+            // await Weather.create(e);
+        })
+        // console.log(items)
+    res.json(items)
+}

@@ -27,10 +27,10 @@ const job = new CronJob('* 0 * * * *', async function() {
         })
         .limit(24);
     input.reverse();
-    console.log(input);
+    // console.log(input.length);
 
     if (input.length == 24) {
-        console.log("ok");
+        // console.log("ok");
 
         try {
             const result = await axios({
@@ -44,18 +44,16 @@ const job = new CronJob('* 0 * * * *', async function() {
             let date = new Date()
             date.addHoures(7)
             await TempPredict.create({
-                time: date,
-                temperature: result.data.result
-            })
-            console.log(result.data.result);
+                    time: date,
+                    temperature: result.data.result
+                })
+                // console.log(result.data.result);
 
             const dataIo = await getData.getTempPredict();
             // du doan mua
             let resultRain = ""
             let dateH = new Date();
-            console.log(dateH.getHours());
             let start, end;
-            console.log("zo");
             let limit = 0;
             if (dateH.getHours() < 12) {
                 limit = dateH.getHours() + 12;
@@ -81,7 +79,6 @@ const job = new CronJob('* 0 * * * *', async function() {
                 .limit(limit);
             inputA = inputA.slice(0, 12);
             inputA.reverse();
-            console.log(inputA);
 
             try {
                 resultRain = await axios({
