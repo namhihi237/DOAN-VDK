@@ -135,7 +135,7 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
             })
         } catch (error) {
             res.render('predict/predict.pug', {
-                mess: 'Server API flask not working '
+                mess: 'Server API flask is not working '
             })
             next(error);
         }
@@ -178,7 +178,7 @@ module.exports.predictRain = async(req, res, next) => {
             res.send("ok");
         } catch (error) {
             res.render('predict/predict.pug', {
-                mess: 'Server API flask not working '
+                mess: 'Server API is flask not working '
             })
             next(error);
         }

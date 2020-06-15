@@ -32,9 +32,9 @@ function init() {
 
 function drawChart(input) {
     let date = new Date(input[1][0].time)
-    date.addHoures(-7)
+    date.addHoures(-6)
     dataChart = []
-    dataChart.push([`${(date.getHours() + 1)}h/${date.getDate()}`, +input[1][0].temperature.toFixed(2), null])
+    dataChart.push([`${(date.getHours())}h/${date.getDate()}`, +input[1][0].temperature.toFixed(2), null])
     input[0].forEach(item => {
         let time = new Date(item.time)
         time.setHours(time.getHours() - 7) // conver timezone VN

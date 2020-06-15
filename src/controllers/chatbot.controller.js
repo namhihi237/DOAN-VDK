@@ -101,7 +101,7 @@ async function handlePostback(sender_psid, received_postback) {
             rainText = 'Trời đang có mưa '
         } else rainText = 'Trời không mưa'
         response = {
-            "text": `Nhiệt độ 🌡️ : ${weather[0].temperature} °C
+            "text": `Nhiệt độ 🌡️ : ${+weather[0].temperature.toFixed(2)} °C
 Áp suất : ${weather[0].pressure} hPa
 Độ ẩm : ${weather[0].humidity} %
 ${rainText}
@@ -151,29 +151,7 @@ ${rainText}
         console.log(inputA);
 
         if (inputA.length == 12) {
-            // try {
-            //     const result = await axios({
-            //         method: 'post',
-            //         url: process.env.API_rain,
-            //         data: {
-            //             inputA,
-            //         },
-            //     });
-            //     // console.log(result.data.result);
-            //     if (result.data.result == 0) {
-            //         response = {
-            //             "text": `Hệ thống dự đoán không có ⛈️ vào khoảng thời gian ${12}`
-            //         }
-            //     } else {
-            //         response = {
-            //             "text": `Hệ thống dự đoán sẽ có mưa vào khoảng thời gian ${12}`
-            //         }
-            //     }
-            // } catch (error) {
-            //     response = {
-            //         "text": `Server not working `
-            //     }
-            // }
+
             let resultRain = ""
             let dateH = new Date();
             let start, end;
@@ -218,69 +196,19 @@ ${rainText}
             }
             if (resultRain == 0) {
                 response = {
-                    "text": `Hệ thống dự đoán không có mưa  vào khoảng thời gian ${start}h - ${end} h ☀️ ☀️ ☀️ `
+                    "text": `Hệ thống dự đoán không mưa  vào khoảng thời gian ${start}h - ${end} h ☀️ ☀️ ☀️ `
                 }
             } else {
                 response = {
-                    "text": `Hệ thống dự đoán  có  mưa vào khoảng thời gian ${start} h  - ${end} h ⛈️ ⛈️ ⛈️`
+                    "text": `Hệ thống dự đoán có mưa vào khoảng thời gian ${start} h  - ${end} h ⛈️ ⛈️ ⛈️`
                 }
             }
         } else {
             response = {
-                "text": `Data not enough `
+                "text": `Data is not enough `
             }
         }
-        // let resultRain = ""
-        // let dateH = new Date();
-        // let start, end;
-        // let limit = 0;
-        // if (dateH.getHours() < 12) {
-        //     limit = dateH.getHours() + 12;
-        //     start = 0;
-        //     end = 12;
-        // } else {
-        //     limit = dateH.getHours();
-        //     start = 12;
-        //     end = 24;
-        // }
-        // let inputA = await Weather_temp.find({}, {
-        //         temperature: 1,
-        //         humidity: 1,
-        //         pressure: 1,
-        //         rain: 1,
-        //         _id: 0,
-        //     }, )
-        //     .sort({
-        //         _id: -1,
-        //     })
-        //     .limit(limit);
-        // inputAA = inputA.slice(0, 12);
-        // inputAA.reverse();
-        // console.log(inputA);
 
-        // try {
-        //     resultRain = await axios({
-        //         method: 'post',
-        //         url: process.env.API_rain,
-        //         data: {
-        //             inputA,
-        //         },
-        //     });
-        //     resultRain = resultRain.data.result;
-
-        // } catch (error) {
-        //     console.log(error);
-
-        // }
-        // if (resultRain == 0) {
-        //     response = {
-        //         "text": `Hệ thống dự đoán không có ⛈️ vào khoảng thời gian ${start}h - ${end} h `
-        //     }
-        // } else {
-        //     response = {
-        //         "text": `Hệ thống dự đoán  có ⛈️ vào khoảng thời gian ${start} h  - ${end} h`
-        //     }
-        // }
     }
     // Send the message to acknowledge the postback
     await callSendAPI(sender_psid, response);
