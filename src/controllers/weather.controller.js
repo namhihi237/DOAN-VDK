@@ -3,86 +3,97 @@ require('dotenv-safe').config({
 });
 const Weather = require('../models/weather.model');
 const Weather_temp = require('../models/weatherTemp.model');
-const TempPredict = require('../models/tempPredict.model')
+const TempPredict = require('../models/tempPredict.model');
 const axios = require('axios');
 
 Date.prototype.addHoures = function(h) {
-    this.setHours(this.getHours() + h)
-    return this
-}
+    this.setHours(this.getHours() + h);
+    return this;
+};
 
 module.exports.insertData = async(req, res, next) => {
     const data = req.query;
-    let date = new Date()
+    let date = new Date();
 
-    let hour = date.getHours()
-    date.addHoures(7)
+    let hour = date.getHours();
+    date.addHoures(7);
     const time = {
-        time: date
-    }
+        time: date,
+    };
 
     const record = Object.assign(time, data);
     //check time xem da sang gio tiep theo chua
-    const preData = await Weather_temp.find().sort({
-            _id: -1
-        }).limit(1) // get record last add
+    const preData = await Weather_temp.find()
+        .sort({
+            _id: -1,
+        })
+        .limit(1); // get record last add
+    // console.log(preData);
 
     if (preData.length == 1) {
-        preData[0].time.setHours(preData[0].time.getHours() - 7)
+        preData[0].time.setHours(preData[0].time.getHours() - 7);
         const preHour = preData[0].time.getHours();
-        if (hour != preHour) {
-            const preYear = preData[0].time.getFullYear()
-            const preMonth = preData[0].time.getMonth()
-            const preDay = preData[0].time.getDate()
+        // console.log(preHour);
+        // console.log(hour);
 
-            const startDate = new Date(preYear, preMonth, preDay, preHour, 0, 0)
-            startDate.setHours(startDate.getHours() + 7)
-            const endDate = new Date(preYear, preMonth, preDay, preHour, 59, 59)
-            endDate.setHours(endDate.getHours() + 7)
-                // console.log(startDate, endDate)
+        if (hour != preHour) {
+            const preYear = preData[0].time.getFullYear();
+            const preMonth = preData[0].time.getMonth();
+            const preDay = preData[0].time.getDate();
+
+            const startDate = new Date(preYear, preMonth, preDay, preHour, 0, 0);
+            startDate.setHours(startDate.getHours() + 7);
+            const endDate = new Date(preYear, preMonth, preDay, preHour, 59, 59);
+            endDate.setHours(endDate.getHours() + 7);
+            // console.log(startDate, endDate)
             const query = {
                 $and: [{
                         time: {
-                            $gte: startDate
-                        }
+                            $gte: startDate,
+                        },
                     },
                     {
                         time: {
-                            $lte: endDate
-                        }
-                    }
-                ]
-            }
+                            $lte: endDate,
+                        },
+                    },
+                ],
+            };
             try {
-                const dataPreHour = await Weather_temp.find(query)
+                const dataPreHour = await Weather_temp.find(query);
                 let temperature = 0;
                 let humidity = 0;
                 let pressure = 0;
-                let rain = 0
-                const lengthRecord = dataPreHour.length
+                let rain = 0;
+                const lengthRecord = dataPreHour.length;
+                // console.log(dataPreHour);
+
                 dataPreHour.forEach((item) => {
-                    temperature = temperature + parseFloat(item.temperature)
-                    humidity = humidity + parseFloat(item.humidity)
-                    pressure = pressure + parseFloat(item.pressure)
-                    rain = rain + parseFloat(item.rain)
-                })
-                temperature = parseFloat((temperature / lengthRecord).toFixed(2))
-                humidity = parseFloat((humidity / lengthRecord).toFixed(2))
-                pressure = parseFloat((pressure / lengthRecord).toFixed(2))
+                    temperature = temperature + parseFloat(item.temperature);
+                    humidity = humidity + parseFloat(item.humidity);
+                    pressure = pressure + parseFloat(item.pressure);
+                    rain = rain + parseFloat(item.rain);
+                });
+                temperature = parseFloat((temperature / lengthRecord).toFixed(2));
+                humidity = parseFloat((humidity / lengthRecord).toFixed(2));
+                pressure = parseFloat((pressure / lengthRecord).toFixed(2));
                 if (rain != 0) {
-                    rain = 1
+                    rain = 1;
                 }
                 const avgData = {
-                    time: startDate,
+                    time: endDate,
                     temperature,
                     humidity,
                     pressure,
-                    rain
-                }
-                await Weather.create(avgData)
+                    rain,
+                };
+                console.log('avg');
 
+                // console.log(avgData);
+
+                await Weather.create(avgData);
             } catch (error) {
-                next(error)
+                next(error);
             }
         }
     }
@@ -90,13 +101,12 @@ module.exports.insertData = async(req, res, next) => {
         const item = await Weather_temp.create(record);
         // const dataIo = await require('../controllers/tempPredict.chart.controller').getTempPredict();
         const dataIo = await require('../controllers/temp.chart.controller').getData();
-        require('../app').io.emit('Sv-send', dataIo)
+        require('../app').io.emit('Sv-send', dataIo);
         res.status(200).json(item);
     } catch (error) {
         next(error);
     }
 };
-
 
 module.exports.tempPredictAnHour = async(req, res, next) => {
     const input = await Weather.find({}, {
@@ -123,26 +133,26 @@ module.exports.tempPredictAnHour = async(req, res, next) => {
             });
             // console.log(result)
 
-            let date = new Date()
+            let date = new Date();
 
-            date.addHoures(7)
+            date.addHoures(7);
             await TempPredict.create({
                 time: date,
-                temperature: result.data.result
-            })
+                temperature: result.data.result,
+            });
             res.render('predict/predict.pug', {
-                result: `${parseFloat(result.data.result).toFixed(2)} (°C)`
-            })
+                result: `${parseFloat(result.data.result).toFixed(2)} (°C)`,
+            });
         } catch (error) {
             res.render('predict/predict.pug', {
-                mess: 'Server API flask is not working '
-            })
+                mess: 'Server API flask is not working ',
+            });
             next(error);
         }
     } else {
         res.render('predict/predict.pug', {
-            mess: 'Data is not enough '
-        })
+            mess: 'Data is not enough ',
+        });
     }
 };
 
@@ -158,7 +168,7 @@ module.exports.predictRain = async(req, res, next) => {
             _id: -1,
         })
         .limit(12);
-    console.log(input)
+    console.log(input);
     if (input.length == 12) {
         try {
             const result = await axios({
@@ -175,12 +185,12 @@ module.exports.predictRain = async(req, res, next) => {
             // })
             console.log(result.data.result);
 
-            res.send("ok");
+            res.send('ok');
         } catch (error) {
             res.render('predict/predict.pug', {
-                mess: 'Server API is flask not working '
-            })
+                mess: 'Server API is flask not working ',
+            });
             next(error);
         }
     }
-}
+};

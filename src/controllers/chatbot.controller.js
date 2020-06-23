@@ -3,7 +3,7 @@ require('dotenv-safe').config({
 });
 const request = require('request');
 const weather_temp = require('../models/weatherTemp.model')
-const tempPredcit = require('../models/tempPredict.model')
+const tempPredict = require('../models/tempPredict.model')
 const Weather = require('../models/weather.model')
 const axios = require('axios')
     // Sets server port and logs message on success
@@ -85,7 +85,7 @@ async function handlePostback(sender_psid, received_postback) {
 
     // Set the response based on the postback payload
     if (payload === 'weather') {
-        const weather = await Weather.find({}, {
+        const weather = await weather_temp.find({}, {
                 temperature: 1,
                 humidity: 1,
                 pressure: 1,
