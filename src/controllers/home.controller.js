@@ -3,6 +3,10 @@ const {
 } = require('json2csv');
 const Weather_temp = require('../models/weatherTemp.model')
 const Weather = require('../models/weather.model')
+Date.prototype.addHoures = function(h) {
+    this.setHours(this.getHours() + h);
+    return this;
+};
 
 module.exports.home = async(req, res, next) => {
     res.render('../views/home/index.pug');
@@ -66,17 +70,15 @@ module.exports.all = async(req, res, next) => {
     }).sort({
         time: 1
     })
+    await Weather.remove();
     items.forEach(async e => {
-        await Weather.findOneAndDelete({
-            _id: e._id
-        })
-        console.log("xoa ok");
-
+        // console.log(typeof e.time);
+        e.time = e.time.addHoures(7);
+        let obj = JSON.stringify(e);
+        await Weather.create(JSON.parse(obj));
+        console.log(obj);
     });
-    items.forEach(async(e) => {
-            console.log(e);
-            // await Weather.create(e);
-        })
-        // console.log(items)
+
+
     res.json(items)
 }

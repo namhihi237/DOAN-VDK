@@ -2,11 +2,15 @@ require('dotenv-safe').config({
     example: process.env.CI ? '.env.ci.example' : '.env.example',
 });
 const request = require('request');
-const weather_temp = require('../models/weatherTemp.model')
-const tempPredict = require('../models/tempPredict.model')
-const Weather = require('../models/weather.model')
-const axios = require('axios')
-    // Sets server port and logs message on success
+const weather_temp = require('../models/weatherTemp.model');
+const tempPredict = require('../models/tempPredict.model');
+const Weather = require('../models/weather.model');
+const axios = require('axios');
+Date.prototype.addHoures = function(h) {
+    this.setHours(this.getHours() + h);
+    return this;
+};
+// Sets server port and logs message on success
 module.exports.postWebhook = (req, res) => {
     let body = req.body;
 
@@ -23,9 +27,7 @@ module.exports.postWebhook = (req, res) => {
             // Check if the event is a message or postback and
             // pass the event to the appropriate handler function
             if (webhook_event.message) {
-
                 handleMessage(sender_psid, webhook_event.message);
-
             } else if (webhook_event.postback) {
                 handlePostback(sender_psid, webhook_event.postback);
             }
@@ -37,7 +39,7 @@ module.exports.postWebhook = (req, res) => {
         // Returns a '404 Not Found' if event is not from a page subscription
         res.sendStatus(404);
     }
-}
+};
 
 module.exports.getWebhook = (req, res) => {
     // Your verify token. Should be a random string.
@@ -59,33 +61,36 @@ module.exports.getWebhook = (req, res) => {
             res.sendStatus(403);
         }
     }
-}
+};
 
 async function handlePostback(sender_psid, received_postback) {
     let response;
     let text, buttons;
-    text = "Chọn chức năng !!";
+    let now = new Date();
+    text = 'Chọn chức năng !!';
     buttons = [{
-                "type": "postback",
-                "title": "Thời tiết hiện tại",
-                "payload": "weather",
-            },
-            {
-                "type": "postback",
-                "title": "Dự đoán nhiệt độ",
-                "payload": "tempPredict",
-            }, {
-                "type": "postback",
-                "title": "Dự đoán mưa",
-                "payload": "rain",
-            },
-        ]
-        // Get the payload for the postback
+            type: 'postback',
+            title: 'Thời tiết hiện tại',
+            payload: 'weather',
+        },
+        {
+            type: 'postback',
+            title: 'Dự đoán nhiệt độ',
+            payload: 'tempPredict',
+        },
+        {
+            type: 'postback',
+            title: 'Dự đoán mưa',
+            payload: 'rain',
+        },
+    ];
+    // Get the payload for the postback
     let payload = received_postback.payload;
 
     // Set the response based on the postback payload
     if (payload === 'weather') {
-        const weather = await weather_temp.find({}, {
+        const weather = await weather_temp
+            .find({}, {
                 temperature: 1,
                 humidity: 1,
                 pressure: 1,
@@ -98,18 +103,17 @@ async function handlePostback(sender_psid, received_postback) {
             .limit(1);
         let rainText = '';
         if (weather[0].rain == 1) {
-            rainText = 'Trời đang có mưa '
-        } else rainText = 'Trời không mưa'
+            rainText = 'Trời đang có mưa ';
+        } else rainText = 'Trời không mưa';
         response = {
-            "text": `Nhiệt độ 🌡️ : ${+weather[0].temperature.toFixed(2)} °C
+            text: `Lúc ${now.getHours()}:${now.getMinutes()}
+Nhiệt độ 🌡️ : ${+weather[0].temperature.toFixed(2)} °C
 Áp suất : ${weather[0].pressure} hPa
 Độ ẩm : ${weather[0].humidity} %
 ${rainText}
-            `
-        }
-
+            `,
+        };
     } else if (payload === 'tempPredict') {
-
         const input = await Weather.find({}, {
                 temperature: 1,
                 humidity: 1,
@@ -130,12 +134,12 @@ ${rainText}
                     input,
                 },
             });
-
+            now.addHoures(1);
+            hour = now.getHours();
             response = {
-                "text": `Nhiệt độ sau 1 giờ là : ${parseFloat(result.data.result).toFixed(2)} °C`
-            }
+                text: `Hệ thống dự đoán nhiệt độ vào khoảng thời gian ${hour} giờ là : ${parseFloat(result.data.result).toFixed(2)} °C`,
+            };
         }
-
     } else if (payload == 'rain') {
         const inputA = await Weather.find({}, {
                 temperature: 1,
@@ -151,8 +155,7 @@ ${rainText}
         console.log(inputA);
 
         if (inputA.length == 12) {
-
-            let resultRain = ""
+            let resultRain = '';
             let dateH = new Date();
             let start, end;
             let limit = 0;
@@ -189,30 +192,27 @@ ${rainText}
                     },
                 });
                 resultRain = resultRain.data.result;
-
             } catch (error) {
                 console.log(error);
-
             }
             if (resultRain == 0) {
                 response = {
-                    "text": `Hệ thống dự đoán không mưa  vào khoảng thời gian ${start}h - ${end} h ☀️ ☀️ ☀️ `
-                }
+                    text: `Hệ thống dự đoán không mưa  vào khoảng thời gian ${start}h - ${end} h ☀️ ☀️ ☀️ `,
+                };
             } else {
                 response = {
-                    "text": `Hệ thống dự đoán có mưa vào khoảng thời gian ${start} h  - ${end} h ⛈️ ⛈️ ⛈️`
-                }
+                    text: `Hệ thống dự đoán có mưa vào khoảng thời gian ${start} h  - ${end} h ⛈️ ⛈️ ⛈️`,
+                };
             }
         } else {
             response = {
-                "text": `Data is not enough `
-            }
+                text: `Data is not enough `,
+            };
         }
-
     }
     // Send the message to acknowledge the postback
     await callSendAPI(sender_psid, response);
-    await sendButtonMessage(sender_psid, text, buttons)
+    await sendButtonMessage(sender_psid, text, buttons);
 }
 
 function handleMessage(sender_psid, received_message) {
@@ -228,23 +228,21 @@ function handleMessage(sender_psid, received_message) {
         // }
         text = `Chọn chức năng !!`;
         buttons = [{
-                "type": "postback",
-                "title": "Thời tiết hiện tại",
-                "payload": "weather",
+                type: 'postback',
+                title: 'Thời tiết hiện tại',
+                payload: 'weather',
             },
             {
-                "type": "postback",
-                "title": "Dự đoán nhiệt độ",
-                "payload": "tempPredict",
+                type: 'postback',
+                title: 'Dự đoán nhiệt độ',
+                payload: 'tempPredict',
             },
             {
-                "type": "postback",
-                "title": "Dự đoán mưa",
-                "payload": "rain",
+                type: 'postback',
+                title: 'Dự đoán mưa',
+                payload: 'rain',
             },
-
-        ]
-
+        ];
     } else if (received_message.attachments) {
         // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
@@ -253,7 +251,7 @@ function handleMessage(sender_psid, received_message) {
 
     // Send the response message
     // callSendAPI(sender_psid, response);
-    sendButtonMessage(sender_psid, text, buttons)
+    sendButtonMessage(sender_psid, text, buttons);
 }
 
 function callSendAPI(sender_psid, response) {
@@ -269,7 +267,7 @@ function callSendAPI(sender_psid, response) {
     request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {
-                access_token: process.env.PAGE_ACCESS_TOKEN
+                access_token: process.env.PAGE_ACCESS_TOKEN,
             },
             method: 'POST',
             json: request_body,
@@ -286,33 +284,35 @@ function callSendAPI(sender_psid, response) {
 
 function sendButtonMessage(senderId, text, buttons) {
     var messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "button",
-                "text": text,
-                "buttons": buttons
-            }
-        }
+        attachment: {
+            type: 'template',
+            payload: {
+                template_type: 'button',
+                text: text,
+                buttons: buttons,
+            },
+        },
     };
 
     request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {
-            access_token: process.env.PAGE_ACCESS_TOKEN
-        },
-        method: 'POST',
-        json: {
-            recipient: {
-                id: senderId
+            url: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {
+                access_token: process.env.PAGE_ACCESS_TOKEN,
             },
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending message: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
+            method: 'POST',
+            json: {
+                recipient: {
+                    id: senderId,
+                },
+                message: messageData,
+            },
+        },
+        function(error, response, body) {
+            if (error) {
+                console.log('Error sending message: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            }
+        },
+    );
 }

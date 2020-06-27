@@ -80,8 +80,12 @@ module.exports.insertData = async(req, res, next) => {
                 if (rain != 0) {
                     rain = 1;
                 }
+                let timeavg = endDate;
+                timeavg.setMinutes(0);
+                timeavg.setSeconds(0);
+
                 const avgData = {
-                    time: endDate,
+                    time: timeavg,
                     temperature,
                     humidity,
                     pressure,

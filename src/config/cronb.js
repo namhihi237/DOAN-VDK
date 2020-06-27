@@ -14,7 +14,7 @@ Date.prototype.addHoures = function(h) {
     return this
 }
 
-const job = new CronJob('* 0 * * * *', async function() {
+const job = new CronJob('0 0 * * * *', async function() {
     console.log('get update predict');
     const input = await Weather.find({}, {
             temperature: 1,
